@@ -3,11 +3,18 @@ robot_name: epuck2
 mode: sim
 sim_backend: webots
 real_backend: epuck2_driver
+controller_name: shared_webots_controller
 policy_topic: /epuck2/cmd_vel
 observation_topic: /epuck2/odom
+camera_topic: /overhead_camera/pose2d
+dataset_root: ./datasets
+sample_rate_hz: 20.0
+max_linear_velocity: 0.13
+max_angular_velocity: 4.5
 enable_real_robot: false
 require_operator_confirm: true
 notes:
-  - Start in simulation first.
-  - Use the same observation/action contract in sim and real.
-  - Turn on real hardware only after validating limits and stop behavior.
+  - Start in Webots simulation first.
+  - Use the same controller in sim and real.
+  - Log matched command/status datasets before sim-real adaptation.
+  - Use overhead-camera trajectories to improve real-state estimation.

@@ -14,14 +14,21 @@ class SessionManifest:
     mode: str = 'sim'
     sim_backend: str = 'webots'
     real_backend: str = 'epuck2_driver'
+    controller_name: str = 'shared_webots_controller'
     policy_topic: str = '/epuck2/cmd_vel'
     observation_topic: str = '/epuck2/odom'
+    camera_topic: str = '/overhead_camera/pose2d'
+    dataset_root: str = './datasets'
+    sample_rate_hz: float = 20.0
+    max_linear_velocity: float = 0.13
+    max_angular_velocity: float = 4.5
     enable_real_robot: bool = False
     require_operator_confirm: bool = True
     notes: list[str] = field(default_factory=lambda: [
-        'Start in simulation first.',
-        'Gate real-robot motion behind operator confirmation.',
-        'Keep sim and real topic contracts aligned before transfer.',
+        'Start in Webots simulation first.',
+        'Run the same controller in sim and real whenever possible.',
+        'Log matched command/status datasets before sim-real adaptation.',
+        'Use overhead-camera trajectories to improve real-state estimation.',
     ])
 
     def to_dict(self) -> dict[str, Any]:
