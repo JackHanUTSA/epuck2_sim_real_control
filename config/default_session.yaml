@@ -13,6 +13,10 @@ max_linear_velocity: 0.13
 max_angular_velocity: 4.5
 wheel_radius_m: 0.021
 axle_length_m: 0.053
+gps_device_name: gps
+compass_device_name: compass
+left_motor_device_name: left wheel motor
+right_motor_device_name: right wheel motor
 goal_tolerance_m: 0.05
 linear_gain: 0.8
 angular_gain: 1.5

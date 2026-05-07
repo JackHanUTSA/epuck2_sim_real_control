@@ -3,7 +3,7 @@
 <package format="3">
   <name>epuck2_sim_real_control</name>
   <version>0.1.0</version>
-  <description>Phase 3 Webots/real runtime integration scaffold for e-puck2 sim-real workflows in ROS 2.</description>
+  <description>Phase 4 Webots status connector scaffold for e-puck2 sim-real workflows in ROS 2.</description>
   <maintainer email="kunlun1988@me.com">r91</maintainer>
   <license>TODO: License declaration</license>
 

@@ -13,6 +13,7 @@ Goal:
 Current scaffold includes:
 - a shared motion/status contract for sim and real adapters
 - Webots sim and real-robot adapter classes that normalize motion status into one schema and translate commands into backend-specific actuation
+- a Webots controller bootstrap and status reader that can import the real Webots Python controller API and pull pose/twist/wheel data from a robot instance
 - a shared pose controller that can run unchanged in sim and real
 - an episode runner that logs matched sim/real dataset samples with the same command contract
 - runtime source iterators for status streams and camera streams
@@ -28,6 +29,7 @@ Main files:
 - `epuck2_sim_real_control/session_manifest.py`
 - `epuck2_sim_real_control/contracts.py`
 - `epuck2_sim_real_control/adapters.py`
+- `epuck2_sim_real_control/webots_connector.py`
 - `epuck2_sim_real_control/shared_controller.py`
 - `epuck2_sim_real_control/episode_runner.py`
 - `epuck2_sim_real_control/runtime_sources.py`
@@ -59,7 +61,7 @@ ros2 launch epuck2_sim_real_control epuck2_sim_real_control.launch.py mode:=sim
 ```
 
 Next good steps:
-1. connect `WebotsSimAdapter` to live Webots controller devices/topics
+1. instantiate `WebotsStatusReader` inside a real Webots controller process and stream its raw status into `live_runtime.py`
 2. connect `RealRobotAdapter` to the physical e-puck2 ROS/driver interface
 3. feed real overhead-camera JSONL or live detections into `camera_ingest.py`
 4. run `live_runtime.py` from actual sim and real status streams instead of synthetic iterables

@@ -24,6 +24,10 @@ class SessionManifest:
     max_angular_velocity: float = 4.5
     wheel_radius_m: float = 0.021
     axle_length_m: float = 0.053
+    gps_device_name: str = 'gps'
+    compass_device_name: str = 'compass'
+    left_motor_device_name: str = 'left wheel motor'
+    right_motor_device_name: str = 'right wheel motor'
     goal_tolerance_m: float = 0.05
     linear_gain: float = 0.8
     angular_gain: float = 1.5

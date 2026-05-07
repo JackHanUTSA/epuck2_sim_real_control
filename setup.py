@@ -16,7 +16,7 @@ setup(
     zip_safe=True,
     maintainer='r91',
     maintainer_email='kunlun1988@me.com',
-    description='Phase 3 Webots/real runtime integration scaffold for e-puck2 sim-real workflows in ROS 2',
+    description='Phase 4 Webots status connector scaffold for e-puck2 sim-real workflows in ROS 2',
     license='TODO: License declaration',
     extras_require={'test': ['pytest']},
     entry_points={

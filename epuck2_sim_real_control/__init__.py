@@ -14,4 +14,5 @@ __all__ = [
     'runtime_sources',
     'session_manifest',
     'shared_controller',
+    'webots_connector',
 ]
