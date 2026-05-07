@@ -28,9 +28,14 @@ class SessionManifest:
     compass_device_name: str = 'compass'
     left_motor_device_name: str = 'left wheel motor'
     right_motor_device_name: str = 'right wheel motor'
+    goal_x: float = 0.2
+    goal_y: float = 0.0
+    goal_theta: float = 0.0
     goal_tolerance_m: float = 0.05
+    goal_heading_tolerance_rad: float = 0.1
     linear_gain: float = 0.8
     angular_gain: float = 1.5
+    max_steps: int = 200
     enable_real_robot: bool = False
     require_operator_confirm: bool = True
     notes: list[str] = field(default_factory=lambda: [

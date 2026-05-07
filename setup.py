@@ -11,6 +11,7 @@ setup(
         ('share/' + package_name, ['package.xml', 'README.md']),
         ('share/' + package_name + '/config', ['config/default_session.yaml']),
         ('share/' + package_name + '/launch', ['launch/epuck2_sim_real_control.launch.py']),
+        ('share/' + package_name + '/scripts', ['scripts/webots_epuck2_controller.py']),
     ],
     install_requires=['setuptools', 'PyYAML'],
     zip_safe=True,
@@ -22,6 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'project_info = epuck2_sim_real_control.project_info:main',
+            'webots_live_controller = epuck2_sim_real_control.webots_live_controller:main',
         ],
     },
 )

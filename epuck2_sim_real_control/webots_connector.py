@@ -83,3 +83,16 @@ class WebotsStatusReader:
 
     def read_status(self) -> MotionStatus:
         return self.adapter.normalize_status(self.read_raw_status())
+
+    def configure_velocity_control(self) -> None:
+        self.left_motor.setPosition(float('inf'))
+        self.right_motor.setPosition(float('inf'))
+        self.left_motor.setVelocity(0.0)
+        self.right_motor.setVelocity(0.0)
+
+    def apply_wheel_velocities(self, left_velocity: float, right_velocity: float) -> None:
+        self.left_motor.setVelocity(float(left_velocity))
+        self.right_motor.setVelocity(float(right_velocity))
+
+    def stop(self) -> None:
+        self.apply_wheel_velocities(0.0, 0.0)

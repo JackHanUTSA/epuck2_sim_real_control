@@ -14,8 +14,19 @@ class SharedPoseController:
         dx = float(goal_pose.x) - float(status.pose.x)
         dy = float(goal_pose.y) - float(status.pose.y)
         distance = math.hypot(dx, dy)
-        if distance <= float(self.manifest.goal_tolerance_m):
+        heading_to_goal = self._wrap_angle(float(goal_pose.theta) - float(status.pose.theta))
+        if (
+            distance <= float(self.manifest.goal_tolerance_m)
+            and abs(heading_to_goal) <= float(self.manifest.goal_heading_tolerance_rad)
+        ):
             return VelocityCommand(linear=0.0, angular=0.0)
+
+        if distance <= float(self.manifest.goal_tolerance_m):
+            angular = max(
+                -float(self.manifest.max_angular_velocity),
+                min(float(self.manifest.max_angular_velocity), float(self.manifest.angular_gain) * heading_to_goal),
+            )
+            return VelocityCommand(linear=0.0, angular=angular)
 
         target_heading = math.atan2(dy, dx)
         heading_error = self._wrap_angle(target_heading - float(status.pose.theta))

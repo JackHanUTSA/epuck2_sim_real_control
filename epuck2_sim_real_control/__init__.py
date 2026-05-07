@@ -15,4 +15,5 @@ __all__ = [
     'session_manifest',
     'shared_controller',
     'webots_connector',
+    'webots_live_controller',
 ]

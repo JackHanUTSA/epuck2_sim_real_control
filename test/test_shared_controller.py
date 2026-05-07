@@ -42,3 +42,13 @@ def test_shared_controller_turns_toward_lateral_goal_and_stops_when_close():
     assert turn.angular <= 4.5
     assert stop.linear == 0.0
     assert stop.angular == 0.0
+
+
+def test_shared_controller_rotates_in_place_for_goal_heading_alignment():
+    manifest = SessionManifest(goal_tolerance_m=0.05, goal_heading_tolerance_rad=0.05, max_angular_velocity=4.5)
+    controller = SharedPoseController(manifest)
+
+    command = controller.compute_command(_status(0.0, 0.0, 0.0), Pose2D(x=0.0, y=0.0, theta=1.57))
+
+    assert command.linear == 0.0
+    assert command.angular > 0.0
