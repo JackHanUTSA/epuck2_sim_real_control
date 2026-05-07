@@ -8,6 +8,8 @@ __all__ = [
     'contracts',
     'dataset_logging',
     'episode_runner',
+    'freemocap_epuck2_detector',
+    'freemocap_session_loader',
     'live_runtime',
     'phase1_architecture',
     'phase2_architecture',
