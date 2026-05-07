@@ -3,8 +3,11 @@
 New project scaffold for e-puck2 sim-to-real control in ROS 2.
 
 Goal:
-- start with a clean project for sim-first control experiments
-- keep simulation and real-robot interfaces aligned
+- use Webots as the simulation environment for e-puck2 controller development
+- design one controller in simulation and run the same controller on the real e-puck2
+- keep simulation and real-robot interfaces aligned so datasets are comparable
+- capture motion-status datasets in both sim and real runs
+- use an overhead camera to recover real-world trajectories/dynamics and improve real-state estimation
 - make it easy to add safety checks before real deployment
 
 Current scaffold includes:
