@@ -21,6 +21,7 @@ Current scaffold includes:
 - a live runtime builder that assembles sim or real episode execution from those sources
 - a camera-observation recorder for overhead-camera trajectories collected during real runs
 - a camera-ingestion and camera-fusion tracker pipeline for overhead-camera-based real-state estimation
+- a documented FreeMoCap-based markerless camera design path for future e-puck2 body tracking without fiducial tags
 - a dataset writer for matched sim/real motion-status collection
 - a YAML session manifest for sim/real configuration
 - a `project_info` node/executable that publishes the active manifest plus the Phase 1/Phase 2 architecture summary
@@ -65,8 +66,9 @@ ros2 launch epuck2_sim_real_control epuck2_sim_real_control.launch.py mode:=sim
 
 Next good steps:
 1. bind `scripts/webots_epuck2_controller.py` into a concrete Webots world/controller directory and validate with the real e-puck2 model
-2. connect `RealRobotAdapter` to the physical e-puck2 ROS/driver interface
-3. feed real overhead-camera JSONL or live detections into `camera_ingest.py`
-4. run `live_runtime.py` from actual sim and real status streams instead of synthetic iterables
-5. add sim-vs-real comparison reports and adaptation/system-identification steps
-6. extend to multi-robot orchestration after the single-robot pipeline is verified
+2. implement the FreeMoCap markerless camera plan in `docs/freemocap-markerless-design.md`
+3. connect `RealRobotAdapter` to the physical e-puck2 ROS/driver interface
+4. feed real overhead-camera JSONL or live detections into `camera_ingest.py`
+5. run `live_runtime.py` from actual sim and real status streams instead of synthetic iterables
+6. add sim-vs-real comparison reports and adaptation/system-identification steps
+7. extend to multi-robot orchestration after the single-robot pipeline is verified
