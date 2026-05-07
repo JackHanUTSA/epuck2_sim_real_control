@@ -22,6 +22,11 @@ class SessionManifest:
     sample_rate_hz: float = 20.0
     max_linear_velocity: float = 0.13
     max_angular_velocity: float = 4.5
+    wheel_radius_m: float = 0.021
+    axle_length_m: float = 0.053
+    goal_tolerance_m: float = 0.05
+    linear_gain: float = 0.8
+    angular_gain: float = 1.5
     enable_real_robot: bool = False
     require_operator_confirm: bool = True
     notes: list[str] = field(default_factory=lambda: [

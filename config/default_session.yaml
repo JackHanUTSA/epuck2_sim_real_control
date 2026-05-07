@@ -11,6 +11,11 @@ dataset_root: ./datasets
 sample_rate_hz: 20.0
 max_linear_velocity: 0.13
 max_angular_velocity: 4.5
+wheel_radius_m: 0.021
+axle_length_m: 0.053
+goal_tolerance_m: 0.05
+linear_gain: 0.8
+angular_gain: 1.5
 enable_real_robot: false
 require_operator_confirm: true
 notes:

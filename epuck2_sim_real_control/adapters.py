@@ -47,12 +47,38 @@ class _BaseAdapter:
             controller_name=self.manifest.controller_name,
         )
 
+    def differential_drive_wheel_speeds(self, command: VelocityCommand) -> tuple[float, float]:
+        clamped = self.clamp_command(command)
+        wheel_radius = float(self.manifest.wheel_radius_m)
+        axle_length = float(self.manifest.axle_length_m)
+        left = (float(clamped.linear) - 0.5 * axle_length * float(clamped.angular)) / wheel_radius
+        right = (float(clamped.linear) + 0.5 * axle_length * float(clamped.angular)) / wheel_radius
+        return left, right
+
 
 class WebotsSimAdapter(_BaseAdapter):
     def __init__(self, manifest: SessionManifest):
         super().__init__(manifest=manifest, source_name='sim')
 
+    def command_to_actuation(self, command: VelocityCommand) -> dict[str, float | str]:
+        left, right = self.differential_drive_wheel_speeds(command)
+        return {
+            'backend': 'webots',
+            'left_motor_velocity': left,
+            'right_motor_velocity': right,
+        }
+
 
 class RealRobotAdapter(_BaseAdapter):
     def __init__(self, manifest: SessionManifest):
         super().__init__(manifest=manifest, source_name='real')
+
+    def command_to_actuation(self, command: VelocityCommand) -> dict[str, Any]:
+        clamped = self.clamp_command(command)
+        return {
+            'backend': self.manifest.real_backend,
+            'cmd_vel': {
+                'linear': float(clamped.linear),
+                'angular': float(clamped.angular),
+            },
+        }

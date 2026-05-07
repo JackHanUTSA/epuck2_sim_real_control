@@ -69,3 +69,19 @@ def test_velocity_command_is_clamped_to_manifest_limits():
 
     assert clamped.linear == 0.13
     assert clamped.angular == -4.5
+
+
+def test_adapters_translate_shared_command_into_backend_specific_actuation():
+    manifest = SessionManifest(max_linear_velocity=0.13, max_angular_velocity=4.5, wheel_radius_m=0.021, axle_length_m=0.053)
+    sim_adapter = WebotsSimAdapter(manifest)
+    real_adapter = RealRobotAdapter(manifest)
+
+    command = VelocityCommand(linear=0.1, angular=0.5)
+    webots_actuation = sim_adapter.command_to_actuation(command)
+    real_actuation = real_adapter.command_to_actuation(command)
+
+    assert webots_actuation['backend'] == 'webots'
+    assert real_actuation['backend'] == 'epuck2_driver'
+    assert webots_actuation['left_motor_velocity'] != webots_actuation['right_motor_velocity']
+    assert real_actuation['cmd_vel']['linear'] == 0.1
+    assert real_actuation['cmd_vel']['angular'] == 0.5

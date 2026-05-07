@@ -71,6 +71,7 @@ class DatasetSample:
     step_index: int
     command: VelocityCommand
     status: MotionStatus
+    actuation: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -78,4 +79,5 @@ class DatasetSample:
             'step_index': int(self.step_index),
             'command': self.command.to_dict(),
             'status': self.status.to_dict(),
+            'actuation': dict(self.actuation),
         }

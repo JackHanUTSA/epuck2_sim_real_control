@@ -12,20 +12,26 @@ Goal:
 
 Current scaffold includes:
 - a shared motion/status contract for sim and real adapters
-- Webots sim and real-robot adapter classes that normalize motion status into one schema
-- a camera-fusion tracker for overhead-camera-based real-state estimation
+- Webots sim and real-robot adapter classes that normalize motion status into one schema and translate commands into backend-specific actuation
+- a shared pose controller that can run unchanged in sim and real
+- an episode runner that logs matched sim/real dataset samples with the same command contract
+- a camera-ingestion and camera-fusion tracker pipeline for overhead-camera-based real-state estimation
 - a dataset writer for matched sim/real motion-status collection
 - a YAML session manifest for sim/real configuration
-- a `project_info` node/executable that publishes the active manifest plus the Phase 1 architecture summary
+- a `project_info` node/executable that publishes the active manifest plus the Phase 1/Phase 2 architecture summary
 - a launch file for quick bring-up sanity checks
 
 Main files:
 - `epuck2_sim_real_control/session_manifest.py`
 - `epuck2_sim_real_control/contracts.py`
 - `epuck2_sim_real_control/adapters.py`
+- `epuck2_sim_real_control/shared_controller.py`
+- `epuck2_sim_real_control/episode_runner.py`
+- `epuck2_sim_real_control/camera_ingest.py`
 - `epuck2_sim_real_control/camera_tracking.py`
 - `epuck2_sim_real_control/dataset_logging.py`
 - `epuck2_sim_real_control/phase1_architecture.py`
+- `epuck2_sim_real_control/phase2_architecture.py`
 - `epuck2_sim_real_control/project_info.py`
 - `config/default_session.yaml`
 - `launch/epuck2_sim_real_control.launch.py`
@@ -47,9 +53,9 @@ ros2 launch epuck2_sim_real_control epuck2_sim_real_control.launch.py mode:=sim
 ```
 
 Next good steps:
-1. connect `WebotsSimAdapter` to real Webots supervisor/controller topics
-2. connect `RealRobotAdapter` to the physical e-puck2 driver interface
-3. add the shared controller module that issues the same `VelocityCommand` in sim and real
-4. log matched sim and real `DatasetSample` streams for the same controller behaviors
-5. connect the overhead camera pipeline to `CameraTracker` for state-estimation fusion
-6. add sim-vs-real comparison reports and adaptation/system-identification steps
+1. connect `WebotsSimAdapter` to live Webots controller devices/topics
+2. connect `RealRobotAdapter` to the physical e-puck2 ROS/driver interface
+3. feed real overhead-camera JSONL or live detections into `camera_ingest.py`
+4. run the same `SharedPoseController` policy over matched sim and real episodes
+5. add sim-vs-real comparison reports and adaptation/system-identification steps
+6. extend to multi-robot orchestration after the single-robot pipeline is verified

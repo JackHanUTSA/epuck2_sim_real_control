@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
 
 from epuck2_sim_real_control.phase1_architecture import build_phase1_architecture
+from epuck2_sim_real_control.phase2_architecture import build_phase2_architecture
 from epuck2_sim_real_control.session_manifest import DEFAULT_MANIFEST, load_manifest
 
 
@@ -28,13 +28,15 @@ class ProjectInfoNode(Node):
         if mode_override:
             manifest.mode = mode_override
 
-        architecture = build_phase1_architecture(manifest)
+        phase1 = build_phase1_architecture(manifest)
+        phase2 = build_phase2_architecture(manifest)
         self.publisher = self.create_publisher(String, str(self.get_parameter('publish_topic').value), 10)
         message = String()
         message.data = json.dumps(
             {
                 'manifest': manifest.to_dict(),
-                'phase1_architecture': architecture.to_dict(),
+                'phase1_architecture': phase1.to_dict(),
+                'phase2_architecture': phase2.to_dict(),
             },
             sort_keys=True,
         )

@@ -41,5 +41,17 @@ class DatasetWriter:
         return self.samples_path
 
 
-def build_dataset_sample(run_id: str, step_index: int, command: VelocityCommand, status: MotionStatus) -> DatasetSample:
-    return DatasetSample(run_id=run_id, step_index=step_index, command=command, status=status)
+def build_dataset_sample(
+    run_id: str,
+    step_index: int,
+    command: VelocityCommand,
+    status: MotionStatus,
+    actuation: dict | None = None,
+) -> DatasetSample:
+    return DatasetSample(
+        run_id=run_id,
+        step_index=step_index,
+        command=command,
+        status=status,
+        actuation={} if actuation is None else dict(actuation),
+    )
