@@ -73,6 +73,34 @@ def test_export_freemocap_session_to_camera_jsonl_records_detected_frames(tmp_pa
     assert measurements[0].pose.x < measurements[1].pose.x
 
 
+def test_export_freemocap_session_to_camera_jsonl_passes_focus_roi_to_detector(tmp_path: Path):
+    output_path = tmp_path / 'camera_observations.jsonl'
+    session = FreeMoCapSession(
+        session_root=tmp_path / 'freemocap_session',
+        video_paths=[tmp_path / 'freemocap_session' / 'synchronized_videos' / 'cam0.mp4'],
+        frames_per_second=10.0,
+    )
+    captured: dict[str, object] = {}
+
+    def fake_detector(frame, **kwargs):
+        captured.update(kwargs)
+        return CameraMeasurement(timestamp=kwargs['timestamp'], pose=Pose2D(x=1.0, y=2.0, theta=3.0), tracking_confidence=0.9)
+
+    saved_path = export_freemocap_session_to_camera_jsonl(
+        session=session,
+        output_path=output_path,
+        pixels_to_world=0.02,
+        world_origin_px=(0.0, 0.0),
+        invert_image_y=False,
+        frame_source=[np.zeros((10, 10), dtype=float)],
+        detector=fake_detector,
+        focus_roi_px=(10.0, 20.0, 30.0, 40.0),
+    )
+
+    assert saved_path == output_path.resolve()
+    assert captured['focus_roi_px'] == (10.0, 20.0, 30.0, 40.0)
+
+
 def test_iter_video_frames_uses_opencv_fallback_when_ffmpeg_is_unavailable(monkeypatch, tmp_path: Path):
     class FakeCapture:
         def __init__(self):

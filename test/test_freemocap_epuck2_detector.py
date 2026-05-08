@@ -133,6 +133,52 @@ def test_detect_epuck2_measurement_detects_robot_like_crop_fixture():
     assert measurement.tracking_confidence >= 0.5
 
 
+def test_detect_epuck2_measurement_recovers_robot_when_focus_roi_is_provided():
+    fixture = _load_rgb_image(Path(__file__).resolve().parent / 'fixtures' / 'epuck_proof_crop.png')
+    frame = np.full((720, 1280, 3), 255, dtype=np.uint8)
+    insert_top = 220
+    insert_left = 400
+    frame[insert_top:insert_top + fixture.shape[0], insert_left:insert_left + fixture.shape[1]] = fixture
+
+    measurement = detect_epuck2_measurement(
+        frame,
+        timestamp=0.0,
+        pixels_to_world=1.0,
+        min_confidence=0.5,
+        world_origin_px=(0.0, 0.0),
+        invert_image_y=False,
+        focus_roi_px=(400.0, 220.0, 220.0, 220.0),
+    )
+
+    assert measurement is not None
+    assert abs(measurement.pose.x - 515.9) < 25.0
+    assert abs(measurement.pose.y - 369.8) < 25.0
+    assert measurement.tracking_confidence >= 0.5
+
+
+def test_detect_epuck2_measurement_scales_focus_roi_to_recover_small_robot():
+    fixture = _load_rgb_image(Path(__file__).resolve().parent / 'fixtures' / 'epuck_proof_crop.png')
+    frame = np.full((720, 1280, 3), 255, dtype=np.uint8)
+    insert_top = 220
+    insert_left = 400
+    frame[insert_top:insert_top + fixture.shape[0], insert_left:insert_left + fixture.shape[1]] = fixture
+
+    measurement = detect_epuck2_measurement(
+        frame,
+        timestamp=0.0,
+        pixels_to_world=1.0,
+        min_confidence=0.5,
+        world_origin_px=(0.0, 0.0),
+        invert_image_y=False,
+        focus_roi_px=(350.0, 180.0, 320.0, 320.0),
+    )
+
+    assert measurement is not None
+    assert abs(measurement.pose.x - 515.9) < 30.0
+    assert abs(measurement.pose.y - 369.8) < 30.0
+    assert measurement.tracking_confidence >= 0.5
+
+
 def test_detect_epuck2_measurement_rejects_real_frame_without_robot_fixture():
     frame = _load_rgb_image(Path(__file__).resolve().parent / 'fixtures' / 'frame47_no_robot.png')
 

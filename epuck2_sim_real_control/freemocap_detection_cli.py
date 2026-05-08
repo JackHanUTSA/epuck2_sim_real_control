@@ -31,6 +31,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         help='Optional image-space origin used to convert detections into the world frame.',
     )
+    parser.add_argument(
+        '--focus-roi-px',
+        nargs=4,
+        metavar=('LEFT', 'TOP', 'WIDTH', 'HEIGHT'),
+        type=float,
+        help='Optional image-space focus crop used before detection: left top width height.',
+    )
     parser.add_argument('--video-index', type=int, default=0, help='FreeMoCap synchronized video index to decode.')
     parser.add_argument(
         '--min-confidence',
@@ -54,6 +61,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     session_root = Path(args.session_root).expanduser().resolve()
     output_path = Path(args.output_path).expanduser().resolve() if args.output_path else session_root / 'camera_observations.jsonl'
     world_origin_px = tuple(args.world_origin_px) if args.world_origin_px is not None else None
+    focus_roi_px = tuple(args.focus_roi_px) if args.focus_roi_px is not None else None
 
     try:
         session = load_freemocap_session(str(session_root))
@@ -64,6 +72,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             min_confidence=float(args.min_confidence),
             world_origin_px=world_origin_px,
             invert_image_y=not bool(args.keep_image_y),
+            focus_roi_px=focus_roi_px,
             video_index=int(args.video_index),
         )
     except Exception as exc:

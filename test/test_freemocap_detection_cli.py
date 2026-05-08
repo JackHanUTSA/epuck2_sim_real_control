@@ -42,6 +42,11 @@ def test_main_invokes_export_with_expected_arguments(monkeypatch, tmp_path: Path
             '--world-origin-px',
             '320',
             '240',
+            '--focus-roi-px',
+            '100',
+            '200',
+            '300',
+            '400',
             '--video-index',
             '1',
             '--min-confidence',
@@ -56,6 +61,7 @@ def test_main_invokes_export_with_expected_arguments(monkeypatch, tmp_path: Path
     assert captured['output_path'] == output_path
     assert captured['pixels_to_world'] == 0.02
     assert captured['world_origin_px'] == (320.0, 240.0)
+    assert captured['focus_roi_px'] == (100.0, 200.0, 300.0, 400.0)
     assert captured['video_index'] == 1
     assert captured['min_confidence'] == 0.7
     assert captured['invert_image_y'] is False

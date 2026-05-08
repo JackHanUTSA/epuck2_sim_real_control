@@ -33,6 +33,7 @@ def export_freemocap_session_to_camera_jsonl(
     min_confidence: float = 0.5,
     world_origin_px: tuple[float, float] | None = None,
     invert_image_y: bool = True,
+    focus_roi_px: tuple[float, float, float, float] | None = None,
     video_index: int = 0,
     detector: Callable[..., CameraMeasurement | None] = detect_epuck2_measurement,
     frame_source: Iterable[np.ndarray] | None = None,
@@ -51,6 +52,7 @@ def export_freemocap_session_to_camera_jsonl(
                 min_confidence=min_confidence,
                 world_origin_px=world_origin_px,
                 invert_image_y=invert_image_y,
+                focus_roi_px=focus_roi_px,
             )
             if measurement is not None:
                 yield measurement
