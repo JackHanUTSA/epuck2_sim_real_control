@@ -146,6 +146,21 @@ def test_detect_epuck2_measurement_rejects_real_frame_without_robot_fixture():
     assert measurement is None
 
 
+def test_detect_epuck2_measurement_rejects_border_hugging_horizontal_strip():
+    frame = np.zeros((120, 180), dtype=float)
+    frame[0:8, 20:170] = 1.0
+
+    measurement = detect_epuck2_measurement(
+        frame,
+        timestamp=0.0,
+        pixels_to_world=1.0,
+        min_confidence=0.5,
+        invert_image_y=False,
+    )
+
+    assert measurement is None
+
+
 def test_detect_epuck2_measurement_validates_public_arguments():
     frame = np.zeros((20, 20), dtype=float)
     frame[8:12, 8:12] = 1.0
