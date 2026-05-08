@@ -37,6 +37,23 @@ def test_load_freemocap_session_accepts_fps_fallback_key(tmp_path: Path):
     assert session.frames_per_second == 25.0
 
 
+def test_load_freemocap_session_accepts_output_data_recording_parameters_layout(tmp_path: Path):
+    session_root = tmp_path / 'freemocap_actual_layout'
+    videos_dir = session_root / 'synchronized_videos'
+    output_dir = session_root / 'output_data'
+    videos_dir.mkdir(parents=True)
+    output_dir.mkdir(parents=True)
+    (videos_dir / 'Camera_000_synchronized.mp4').write_bytes(b'')
+    (output_dir / 'recording_parameters.json').write_text(
+        json.dumps({'post_processing_parameters_model': {'framerate': 30.0}})
+    )
+
+    session = load_freemocap_session(session_root)
+
+    assert session.frames_per_second == 30.0
+    assert session.video_paths[0].name == 'Camera_000_synchronized.mp4'
+
+
 def test_freemocap_session_computes_frame_timestamps():
     session = FreeMoCapSession(
         session_root=Path('/tmp/freemocap'),

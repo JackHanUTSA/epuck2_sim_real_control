@@ -74,6 +74,8 @@ def detect_epuck2_body(frame: np.ndarray) -> DetectionResult | None:
 
     candidate = max(candidates, key=lambda item: item.score)
     body_pixels = candidate.pixels
+    if _covers_entire_frame(body_pixels, normalized.shape):
+        return None
     center_y = float(body_pixels[:, 0].mean())
     center_x = float(body_pixels[:, 1].mean())
 
@@ -194,6 +196,15 @@ def _extract_cue_pixels(normalized: np.ndarray, body_pixels: np.ndarray) -> np.n
     if cue_pixels.shape[0] < 1:
         return np.empty((0, 2), dtype=int)
     return cue_pixels
+
+
+def _covers_entire_frame(body_pixels: np.ndarray, image_shape: tuple[int, int]) -> bool:
+    image_height, image_width = image_shape
+    min_row = int(body_pixels[:, 0].min())
+    max_row = int(body_pixels[:, 0].max())
+    min_col = int(body_pixels[:, 1].min())
+    max_col = int(body_pixels[:, 1].max())
+    return min_row == 0 and min_col == 0 and max_row == image_height - 1 and max_col == image_width - 1
 
 
 def _normalize_frame(frame: np.ndarray) -> np.ndarray:

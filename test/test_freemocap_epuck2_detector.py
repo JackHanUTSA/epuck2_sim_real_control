@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+import subprocess
 import sys
 
 import numpy as np
@@ -7,6 +9,24 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from epuck2_sim_real_control.freemocap_epuck2_detector import detect_epuck2_measurement
+
+
+def _load_rgb_image(path: Path) -> np.ndarray:
+    probe = subprocess.run(
+        ['ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height', '-of', 'json', str(path)],
+        capture_output=True,
+        check=True,
+        text=True,
+    )
+    metadata = json.loads(probe.stdout)['streams'][0]
+    width = int(metadata['width'])
+    height = int(metadata['height'])
+    raw = subprocess.run(
+        ['ffmpeg', '-v', 'error', '-i', str(path), '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'],
+        capture_output=True,
+        check=True,
+    )
+    return np.frombuffer(raw.stdout, dtype=np.uint8).reshape((height, width, 3))
 
 
 def test_detect_epuck2_measurement_finds_center_from_synthetic_body():
@@ -96,6 +116,34 @@ def test_detect_epuck2_measurement_uses_centered_world_frame_by_default():
     assert measurement is not None
     assert abs(measurement.pose.x - 0.005) < 0.03
     assert abs(measurement.pose.y - 0.095) < 0.03
+
+
+def test_detect_epuck2_measurement_detects_robot_like_crop_fixture():
+    frame = _load_rgb_image(Path(__file__).resolve().parent / 'fixtures' / 'epuck_proof_crop.png')
+
+    measurement = detect_epuck2_measurement(
+        frame,
+        timestamp=0.0,
+        pixels_to_world=1.0,
+        min_confidence=0.5,
+        invert_image_y=False,
+    )
+
+    assert measurement is not None
+    assert measurement.tracking_confidence >= 0.5
+
+
+def test_detect_epuck2_measurement_rejects_real_frame_without_robot_fixture():
+    frame = _load_rgb_image(Path(__file__).resolve().parent / 'fixtures' / 'frame47_no_robot.png')
+
+    measurement = detect_epuck2_measurement(
+        frame,
+        timestamp=47.0 / 30.0,
+        pixels_to_world=1.0,
+        min_confidence=0.5,
+    )
+
+    assert measurement is None
 
 
 def test_detect_epuck2_measurement_validates_public_arguments():

@@ -40,17 +40,24 @@ def load_freemocap_session(session_root: str | Path) -> FreeMoCapSession:
 
 
 def _load_recording_parameters(session_root: Path) -> dict:
-    parameters_path = session_root / 'recording_parameters.json'
-    if not parameters_path.is_file():
-        raise FileNotFoundError(f'recording_parameters.json not found under {session_root}')
-    payload = json.loads(parameters_path.read_text(encoding='utf-8'))
-    if not isinstance(payload, dict):
-        raise ValueError(f'recording_parameters.json must contain a JSON object under {session_root}')
-    return payload
+    candidate_paths = [
+        session_root / 'recording_parameters.json',
+        session_root / 'output_data' / 'recording_parameters.json',
+    ]
+    for parameters_path in candidate_paths:
+        if parameters_path.is_file():
+            payload = json.loads(parameters_path.read_text(encoding='utf-8'))
+            if not isinstance(payload, dict):
+                raise ValueError(f'recording_parameters.json must contain a JSON object under {parameters_path.parent}')
+            return payload
+    raise FileNotFoundError(f'recording_parameters.json not found under {session_root}')
 
 
 def _extract_frames_per_second(metadata: dict, session_root: Path) -> float:
+    post_processing = metadata.get('post_processing_parameters_model') or {}
     raw_value = metadata.get('frames_per_second', metadata.get('fps'))
+    if raw_value is None and isinstance(post_processing, dict):
+        raw_value = post_processing.get('framerate', post_processing.get('sampling_rate'))
     try:
         frames_per_second = float(raw_value)
     except (TypeError, ValueError) as exc:
